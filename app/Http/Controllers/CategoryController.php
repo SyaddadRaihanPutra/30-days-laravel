@@ -3,19 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Product;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $products = Product::all();
-        $categories = Category::all();
-        return view('products.index', compact('products', 'categories'));
+        $categories = Category::with('products')->get();
+        return view('categories.index', compact('categories'));
     }
 
     /**
@@ -23,7 +21,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        #
     }
 
     /**
@@ -32,14 +30,11 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         try {
-            $product = new Product();
-            $product->name = $request->name;
-            $product->price = $request->price;
-            $product->description = $request->description;
-            $product->category_id = $request->category_id;
-            $product->save();
-
-            return redirect()->back()->with('success', 'Product created successfully');
+            $category = new Category();
+            $category->name = $request->name;
+            $category->slug = \Str::slug($request->name);
+            $category->save();
+            return redirect()->back()->with('success', 'Category created successfully');
         } catch (\Throwable $e) {
             return redirect()->back()->with('error', 'An error occurred');
         }
@@ -67,14 +62,11 @@ class ProductController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            $product = Product::find($id);
-            $product->name = $request->name;
-            $product->price = $request->price;
-            $product->description = $request->description;
-            $product->category_id = $request->category_id;
-            $product->save();
-
-            return redirect()->back()->with('success', 'Product updated successfully');
+            $category = Category::find($id);
+            $category->name = $request->name;
+            $category->slug = \Str::slug($request->name);
+            $category->save();
+            return redirect()->back()->with('success', 'Category updated successfully');
         } catch (\Throwable $e) {
             return redirect()->back()->with('error', 'An error occurred');
         }
@@ -86,9 +78,9 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         try {
-            $product = Product::find($id);
-            $product->delete();
-            return redirect()->back()->with('success', 'Product deleted successfully');
+            $category = Category::find($id);
+            $category->delete();
+            return redirect()->back()->with('success', 'Category deleted successfully');
         } catch (\Throwable $e) {
             return redirect()->back()->with('error', 'An error occurred');
         }

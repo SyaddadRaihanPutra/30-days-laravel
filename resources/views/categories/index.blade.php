@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Product | CRUD</title>
+    <title>Category | CRUD</title>
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css'
         integrity='sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg=='
         crossorigin='anonymous' />
@@ -16,19 +16,19 @@
         <div class="row">
             <div class="col-md-12">
                 <div>
-                    <h1>Product List</h1>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">Add
-                        Product</button>
-                    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+                    <h1>Category List</h1>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add
+                        Category</button>
+                    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                                    <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('products.store') }}" method="POST">
+                                <form action="{{ route('categories.store') }}" method="POST">
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
@@ -36,21 +36,8 @@
                                             <input type="text" class="form-control" id="name" name="name">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="price" class="form-label">Price</label>
-                                            <input type="number" class="form-control" id="price" name="price">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="quantity" class="form-label">Description</label>
-                                            <textarea class="form-control" id="description" name="description"></textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="category_id" class="form-label">Category</label>
-                                            <select class="form-select" id="category_id" name="category_id">
-                                                <option selected>Choose Cateegories</option>
-                                                @foreach ($categories as $category)
-                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                @endforeach
-                                            </select>
+                                            <label for="slug" class="form-label">Slug</label>
+                                            <input type="text" class="form-control" id="slug" name="slug">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -80,68 +67,58 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Price</th>
-                            <th>Description</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($products as $product)
+                        @foreach ($categories as $category)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $product->name }}</td>
-                                <td>{{ $product->price }}</td>
-                                <td>{{ $product->description }}</td>
+                                <td>{{ $category->name }}</td>
+                                <td>{{ $category->slug }}</td>
                                 <td>
-                                    <button class="btn btn-light" data-bs-toggle="modal"
-                                        data-bs-target="#showProductModal{{ $product->id }}">Show</button>
-                                    <div class="modal fade" id="showProductModal{{ $product->id }}" tabindex="-1"
-                                        aria-labelledby="showProductModalLabel{{ $product->id }}" aria-hidden="true">
+                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#showcategoryModal{{ $category->id }}">Show</button>
+                                    <div class="modal fade" id="showcategoryModal{{ $category->id }}" tabindex="-1" aria-labelledby="showcategoryModal{{ $category->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title"
-                                                        id="showProductModalLabel{{ $product->id }}">
+                                                        id="showcategoryModal{{ $category->id }}">
                                                         Show
-                                                        Product</h5>
+                                                        category</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label for="name" class="form-label">Name</label>
-                                                        <input type="text" class="form-control" id="name"
-                                                            name="name" value="{{ $product->name }}" readonly>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="price" class="form-label">Price</label>
-                                                        <input type="number" class="form-control" id="price"
-                                                            name="price" value="{{ $product->price }}" readonly>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="description"
-                                                            class="form-label">Description</label>
-                                                        <textarea class="form-control" id="description" name="description"
-                                                            readonly>{{ $product->description }}</textarea>
-                                                    </div>
+                                                    <p>ID: {{ $category->id }}</p>
+                                                    <p>Name: {{ $category->name }}</p>
+                                                    <p>Slug: {{ $category->slug }}</p>
+                                                    <p>Related Product:</p>
+                                                    <ul>
+                                                        @foreach ($category->products as $product)
+                                                            <li>{{ $product->name }}</li>
+                                                        @endforeach
+                                                    </ul>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <button class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#editProductModal{{ $product->id }}">Edit</button>
-                                    <div class="modal fade" id="editProductModal{{ $product->id }}" tabindex="-1"
-                                        aria-labelledby="editProductModalLabel{{ $product->id }}" aria-hidden="true">
+                                        data-bs-target="#editcategoryModal{{ $category->id }}">Edit</button>
+                                    <div class="modal fade" id="editcategoryModal{{ $category->id }}" tabindex="-1"
+                                        aria-labelledby="editcategoryModalLabel{{ $category->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title"
-                                                        id="editProductModalLabel{{ $product->id }}">
+                                                        id="editcategoryModalLabel{{ $category->id }}">
                                                         Edit
-                                                        Product</h5>
+                                                        category</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
-                                                <form action="{{ route('products.update', $product->id) }}"
+                                                <form action="{{ route('categories.update', $category->id) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('PUT')
@@ -149,29 +126,12 @@
                                                         <div class="mb-3">
                                                             <label for="name" class="form-label">Name</label>
                                                             <input type="text" class="form-control" id="name"
-                                                                name="name" value="{{ $product->name }}">
+                                                                name="name" value="{{ $category->name }}">
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label for="price" class="form-label">Price</label>
-                                                            <input type="number" class="form-control" id="price"
-                                                                name="price" value="{{ $product->price }}">
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="description"
-                                                                class="form-label">Description</label>
-                                                            <textarea class="form-control" id="description" name="description">{{ $product->description }}</textarea>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="category_id" class="form-label">Category</label>
-                                                            <select class="form-select" id="category_id" name="category_id"
-                                                                readonly>
-                                                                <option selected>Choose Cateegories</option>
-                                                                @foreach ($categories as $category)
-                                                                    <option value="{{ $category->id }}"
-                                                                        {{ $category->id == $product->category_id ? 'selected' : '' }}>
-                                                                        {{ $category->name }}</option>
-                                                                @endforeach
-                                                            </select>
+                                                            <label for="slug" class="form-label">Slug</label>
+                                                            <input type="text" class="form-control" id="slug"
+                                                                name="price" value="{{ $category->slug }}">
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -184,7 +144,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST"
                                         style="display: inline-block">
                                         @csrf
                                         @method('DELETE')
